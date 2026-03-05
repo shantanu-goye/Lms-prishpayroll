@@ -10,8 +10,8 @@
     "lint": "eslint"
   },
   "dependencies": {
-    "@libsql/client": "^0.17.0",
-    "@prisma/adapter-libsql": "^7.4.2",
+    "@libsql/client": "^0.8.0",
+    "@prisma/adapter-libsql": "^6.3.0",
     "@prisma/client": "^6.3.0",
     "@radix-ui/react-dialog": "^1.1.15",
     "@types/bcryptjs": "^2.4.6",
