@@ -1,18 +1,18 @@
 import prisma from '@/lib/prisma'
-import CourseForm from '@/app/ui/admin/course-form'
-import { Card, CardHeader, CardTitle, CardContent, CardFooter } from '@/components/ui/card'
-import { Button } from '@/components/ui/button'
-import { Users, Info, Trash2 } from 'lucide-react'
-import Link from 'next/link'
+import AddCourseDialog from '@/app/ui/admin/add-course-dialog'
 import EditCourseDialog from '@/app/ui/admin/edit-course-dialog'
 import { deleteCourse } from '@/app/actions/courses'
+import { Card, CardHeader, CardTitle, CardContent, CardFooter } from '@/components/ui/card'
+import { Button } from '@/components/ui/button'
+import { Users, Info, Trash2, BookOpen } from 'lucide-react'
+import Link from 'next/link'
 
 export default async function CoursesPage() {
     const courses = await prisma.course.findMany({
         include: {
             instructor: true,
             _count: {
-                select: { enrollments: true },
+                select: { enrollments: true, modules: true },
             },
         },
         orderBy: { id: 'desc' },
@@ -25,9 +25,8 @@ export default async function CoursesPage() {
                     <h2 className="text-[32px] font-semibold tracking-tight text-[#015A86]">Manage Courses</h2>
                     <p className="text-[#0B2E3F] mt-[4px] text-[16px]">Create, edit, and manage all academic courses.</p>
                 </div>
+                <AddCourseDialog />
             </div>
-
-            <CourseForm />
 
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-[24px]">
                 {courses.map((course) => (
@@ -44,6 +43,10 @@ export default async function CoursesPage() {
                                 <div className="flex items-center gap-[4px] text-[#015A86] font-medium">
                                     <Users className="h-[16px] w-[16px]" />
                                     <span>{course._count.enrollments}</span>
+                                </div>
+                                <div className="flex items-center gap-[4px] text-[#015A86] font-medium">
+                                    <BookOpen className="h-[16px] w-[16px]" />
+                                    <span>{course._count.modules} Modules</span>
                                 </div>
                             </div>
                         </CardContent>
@@ -76,7 +79,7 @@ export default async function CoursesPage() {
                 ))}
                 {courses.length === 0 && (
                     <Card className="col-span-full py-[48px] text-center text-[#0B2E3F] bg-[#F5F8FA] border border-dashed border-[#E5E7EB] rounded-[12px]">
-                        No courses created yet.
+                        No courses created yet. Click "Add Course" to get started.
                     </Card>
                 )}
             </div>

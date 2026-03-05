@@ -2,7 +2,7 @@
 
 import { useState } from 'react'
 import { useActionState } from 'react'
-import { updateAssignment } from '@/app/actions/assignments'
+import { createCourse } from '@/app/actions/courses'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
@@ -16,38 +16,36 @@ import {
     DialogTitle,
     DialogTrigger,
 } from '@/components/ui/dialog'
-import { Loader2, Pencil } from 'lucide-react'
+import { Loader2, BookPlus } from 'lucide-react'
 
 const initialState = {
     error: '',
     success: '',
 }
 
-export default function EditAssignmentDialog({ assignment }: { assignment: any }) {
+export default function AddCourseDialog() {
     const [open, setOpen] = useState(false)
-    // Get courseId from the module relation
-    const courseId = assignment.module?.courseId || 0
-    const updateAssignmentWithId = updateAssignment.bind(null, assignment.id, courseId)
-    const [state, formAction, isPending] = useActionState(updateAssignmentWithId, initialState)
+    const [state, formAction, isPending] = useActionState(createCourse, initialState)
 
     return (
         <Dialog open={open} onOpenChange={setOpen}>
             <DialogTrigger asChild>
-                <Button variant="ghost" size="icon" className="h-[32px] w-[32px] text-[#015A86] hover:text-[#015A86] hover:bg-[#F5F8FA] rounded-[6px] transition-colors border-0">
-                    <Pencil className="h-[14px] w-[14px] stroke-2" />
+                <Button className="bg-[#FD8B0A] hover:bg-[#e57a00] text-white rounded-[8px] h-[40px] font-medium transition-colors border-0">
+                    <BookPlus className="mr-[8px] h-[16px] w-[16px]" />
+                    Add Course
                 </Button>
             </DialogTrigger>
             <DialogContent className="sm:max-w-[500px] bg-white rounded-[12px] p-[32px] border border-[#E5E7EB]">
                 <DialogHeader className="mb-[24px]">
-                    <DialogTitle className="text-[24px] font-semibold text-[#015A86]">Edit Assignment</DialogTitle>
+                    <DialogTitle className="text-[24px] font-semibold text-[#015A86]">Add New Course</DialogTitle>
                     <DialogDescription className="text-[#0B2E3F] text-[14px]">
-                        Update assignment details.
+                        Create a new course for students to enroll in.
                     </DialogDescription>
                 </DialogHeader>
                 <form action={formAction} className="space-y-[24px]">
                     <div className="space-y-[8px]">
-                        <Label htmlFor="title" className="text-[#0B2E3F] font-medium text-[14px]">Title</Label>
-                        <Input id="title" name="title" defaultValue={assignment.title} required className="border-[#E5E7EB] focus-visible:ring-[#015A86] rounded-[6px] h-[40px]" />
+                        <Label htmlFor="title" className="text-[#0B2E3F] font-medium text-[14px]">Course Title *</Label>
+                        <Input id="title" name="title" placeholder="e.g., Web Development" required className="border-[#E5E7EB] focus-visible:ring-[#015A86] rounded-[6px] h-[40px]" />
                     </div>
 
                     <div className="space-y-[8px]">
@@ -55,19 +53,22 @@ export default function EditAssignmentDialog({ assignment }: { assignment: any }
                         <Textarea
                             id="description"
                             name="description"
-                            defaultValue={assignment.description || ''}
+                            placeholder="Course description..."
                             rows={3}
                             className="border-[#E5E7EB] focus-visible:ring-[#015A86] rounded-[6px] resize-none"
                         />
                     </div>
 
                     <div className="space-y-[8px]">
-                        <Label htmlFor="dueDate" className="text-[#0B2E3F] font-medium text-[14px]">Due Date</Label>
+                        <Label htmlFor="price" className="text-[#0B2E3F] font-medium text-[14px]">Course Fee (₹)</Label>
                         <Input
-                            id="dueDate"
-                            name="dueDate"
-                            type="date"
-                            defaultValue={assignment.dueDate ? new Date(assignment.dueDate).toISOString().split('T')[0] : ''}
+                            id="price"
+                            name="price"
+                            type="number"
+                            min="0"
+                            step="0.01"
+                            placeholder="0.00"
+                            required
                             className="border-[#E5E7EB] focus-visible:ring-[#015A86] rounded-[6px] h-[40px]"
                         />
                     </div>
@@ -83,10 +84,10 @@ export default function EditAssignmentDialog({ assignment }: { assignment: any }
                             {isPending ? (
                                 <>
                                     <Loader2 className="mr-[8px] h-[16px] w-[16px] animate-spin" />
-                                    Saving...
+                                    Creating...
                                 </>
                             ) : (
-                                'Save Changes'
+                                'Create Course'
                             )}
                         </Button>
                     </DialogFooter>

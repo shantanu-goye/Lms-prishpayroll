@@ -31,7 +31,7 @@ model Course {
   description  String?
   price        Float        @default(0)
   instructorId Int
-  assignments  Assignment[]
+  modules      Module[]
   instructor   User         @relation(fields: [instructorId], references: [id])
   enrollments  Enrollment[]
   fees         Fee[]
@@ -40,13 +40,22 @@ model Course {
 model Enrollment {
   id          Int      @id @default(autoincrement())
   userId      Int
-  courseId    Int
+  courseId     Int
   agreedPrice Float?
   enrolledAt  DateTime @default(now())
-  course      Course   @relation(fields: [courseId], references: [id])
+  course      Course   @relation(fields: [courseId], references: [id], onDelete: Cascade)
   user        User     @relation(fields: [userId], references: [id])
 
   @@unique([userId, courseId])
+}
+
+model Module {
+  id          Int          @id @default(autoincrement())
+  title       String
+  order       Int          @default(0)
+  courseId     Int
+  course      Course       @relation(fields: [courseId], references: [id], onDelete: Cascade)
+  assignments Assignment[]
 }
 
 model Assignment {
@@ -54,8 +63,8 @@ model Assignment {
   title       String
   description String?
   dueDate     DateTime?
-  courseId    Int
-  course      Course       @relation(fields: [courseId], references: [id])
+  moduleId    Int
+  module      Module       @relation(fields: [moduleId], references: [id], onDelete: Cascade)
   submissions Submission[]
 }
 
@@ -64,9 +73,10 @@ model Submission {
   assignmentId Int
   studentId    Int
   filePath     String
+  status       String     @default("PENDING")
   submittedAt  DateTime   @default(now())
   student      User       @relation(fields: [studentId], references: [id])
-  assignment   Assignment @relation(fields: [assignmentId], references: [id])
+  assignment   Assignment @relation(fields: [assignmentId], references: [id], onDelete: Cascade)
 }
 
 model Fee {

@@ -9,20 +9,36 @@ import {
     ChevronLeft,
     ChevronRight,
     LogOut,
+    LayoutDashboard,
+    Users,
+    BookOpen,
+    CreditCard,
+    ShieldCheck,
+    GraduationCap,
     LucideIcon
 } from 'lucide-react'
 import { cn } from '@/lib/utils'
 
+// Map string names to actual icon components inside the client component
+const iconMap: Record<string, LucideIcon> = {
+    LayoutDashboard,
+    Users,
+    BookOpen,
+    CreditCard,
+    ShieldCheck,
+    GraduationCap,
+}
+
 interface NavItem {
     label: string
     href: string
-    icon: LucideIcon
+    iconName: string
 }
 
 interface SidebarProps {
     navItems: NavItem[]
     logoutAction: () => Promise<void>
-    headerIcon: LucideIcon
+    headerIconName: string
     headerTitle: string
     headerSubtitle: string
 }
@@ -30,12 +46,13 @@ interface SidebarProps {
 export default function Sidebar({
     navItems,
     logoutAction,
-    headerIcon: HeaderIcon,
+    headerIconName,
     headerTitle,
     headerSubtitle
 }: SidebarProps) {
     const [isCollapsed, setIsCollapsed] = useState(false)
     const pathname = usePathname()
+    const HeaderIcon = iconMap[headerIconName] || ShieldCheck
 
     return (
         <aside
@@ -75,6 +92,7 @@ export default function Sidebar({
             <nav className="mt-[16px] flex-1 px-[16px] space-y-[8px]">
                 {navItems.map((item) => {
                     const isActive = pathname === item.href
+                    const ItemIcon = iconMap[item.iconName] || BookOpen
                     return (
                         <Link
                             key={item.href}
@@ -87,7 +105,7 @@ export default function Sidebar({
                                 isCollapsed && "justify-center px-0"
                             )}
                         >
-                            <item.icon
+                            <ItemIcon
                                 className={cn(
                                     "h-[20px] w-[20px] transition-colors stroke-2",
                                     isActive ? "text-[#FD8B0A]" : "text-[#015A86] group-hover:text-[#FD8B0A]"

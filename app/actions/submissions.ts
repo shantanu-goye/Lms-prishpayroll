@@ -34,25 +34,41 @@ export async function submitAssignment(prevState: any, formData: FormData) {
         assignmentId,
         studentId: session.userId,
         filePath,
+        status: 'PENDING',
       },
     })
     
-    // We need to revalidate the course page
-    // Needs courseId to revalidate correct path. 
-    // Or just revalidate the layout? 
-    // We don't have courseId here easily unless passed.
-    // We can fetch assignment to get courseId.
     const assignment = await prisma.assignment.findUnique({
       where: { id: assignmentId },
+      include: { module: true },
     })
     
     if (assignment) {
-      revalidatePath(`/dashboard/student/course/${assignment.courseId}`)
+      revalidatePath(`/dashboard/student/course/${assignment.module.courseId}`)
     }
     
     return { success: 'Assignment submitted successfully', error: '' }
   } catch (error) {
     console.error('Failed to submit assignment:', error)
     return { error: 'Failed to submit assignment', success: '' }
+  }
+}
+
+export async function updateSubmissionStatus(submissionId: number, status: string, courseId: number) {
+  const session = await verifySession()
+  if (!session || session.role !== 'ADMIN') {
+    return { error: 'Unauthorized' }
+  }
+
+  try {
+    await prisma.submission.update({
+      where: { id: submissionId },
+      data: { status },
+    })
+    revalidatePath(`/dashboard/admin/courses/${courseId}`)
+    return { success: `Submission ${status.toLowerCase()} successfully` }
+  } catch (error) {
+    console.error('Failed to update submission status:', error)
+    return { error: 'Failed to update submission status' }
   }
 }

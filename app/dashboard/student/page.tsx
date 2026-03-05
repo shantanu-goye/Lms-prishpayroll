@@ -15,8 +15,12 @@ export default async function StudentDashboard() {
             course: {
                 include: {
                     instructor: true,
-                    _count: {
-                        select: { assignments: true },
+                    modules: {
+                        include: {
+                            _count: {
+                                select: { assignments: true },
+                            },
+                        },
                     },
                 },
             },
@@ -51,7 +55,7 @@ export default async function StudentDashboard() {
                                 </div>
                                 <div className="flex items-center gap-[8px]">
                                     <BookOpen className="h-[14px] w-[14px] text-[#FD8B0A] stroke-2" />
-                                    <span>{enrollment.course._count.assignments} Assignments</span>
+                                    <span>{enrollment.course.modules.reduce((sum: number, m: any) => sum + m._count.assignments, 0)} Assignments</span>
                                 </div>
                             </div>
                         </CardContent>

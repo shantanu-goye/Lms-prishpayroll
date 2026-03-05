@@ -6,77 +6,66 @@ import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import { Textarea } from '@/components/ui/textarea'
 import { Label } from '@/components/ui/label'
-import { Card, CardHeader, CardTitle, CardContent } from '@/components/ui/card'
-import { Loader2, CalendarPlus } from 'lucide-react'
+import { Loader2, Plus } from 'lucide-react'
 
 const initialState = {
     error: '',
     success: '',
 }
 
-export default function AssignmentForm({ courseId }: { courseId: number }) {
+export default function AssignmentForm({ moduleId, courseId }: { moduleId: number; courseId: number }) {
     const [state, formAction, isPending] = useActionState(createAssignment, initialState)
 
     return (
-        <Card className="mb-6 shadow-sm border-indigo-100">
-            <CardHeader>
-                <CardTitle className="text-lg flex items-center gap-2">
-                    <CalendarPlus className="h-5 w-5 text-indigo-600" />
-                    Add Assignment
-                </CardTitle>
-            </CardHeader>
-            <CardContent>
-                <form action={formAction} className="space-y-4">
-                    <input type="hidden" name="courseId" value={courseId} />
-                    <div className="space-y-2">
-                        <Label htmlFor="title">Assignment Title</Label>
+        <div className="bg-[#F5F8FA] rounded-[8px] border border-[#E5E7EB] p-[16px] mt-[16px]">
+            <p className="text-[12px] font-bold text-[#015A86] uppercase tracking-wider mb-[12px]">Add Assignment</p>
+            <form action={formAction} className="space-y-[12px]">
+                <input type="hidden" name="moduleId" value={moduleId} />
+                <input type="hidden" name="courseId" value={courseId} />
+                <Input
+                    name="title"
+                    placeholder="Assignment title"
+                    required
+                    className="border-[#E5E7EB] focus-visible:ring-[#015A86] rounded-[6px] h-[36px] text-[14px] bg-white"
+                />
+                <Textarea
+                    name="description"
+                    placeholder="Instructions (optional)"
+                    rows={2}
+                    className="border-[#E5E7EB] focus-visible:ring-[#015A86] rounded-[6px] text-[14px] bg-white resize-none"
+                />
+                <div className="flex gap-[12px] items-end">
+                    <div className="flex-1 space-y-[4px]">
+                        <Label className="text-[12px] text-[#0B2E3F]">Due Date</Label>
                         <Input
-                            id="title"
-                            name="title"
-                            placeholder="e.g., Final Project, Quiz 1"
-                            required
-                        />
-                    </div>
-                    <div className="space-y-2">
-                        <Label htmlFor="description">Description / Instructions</Label>
-                        <Textarea
-                            id="description"
-                            name="description"
-                            placeholder="Provide details about the assignment..."
-                            rows={3}
-                        />
-                    </div>
-                    <div className="space-y-2">
-                        <Label htmlFor="dueDate">Due Date</Label>
-                        <Input
-                            id="dueDate"
                             name="dueDate"
                             type="datetime-local"
+                            className="border-[#E5E7EB] focus-visible:ring-[#015A86] rounded-[6px] h-[36px] text-[14px] bg-white"
                         />
                     </div>
-
-                    {(state?.error || state?.success) && (
-                        <div className={`p-3 rounded-lg text-sm font-medium ${state?.error ? 'bg-destructive/10 text-destructive' : 'bg-green-50 text-green-600'}`}>
-                            {state?.error || state?.success}
-                        </div>
-                    )}
-
                     <Button
                         type="submit"
                         disabled={isPending}
-                        className="w-full bg-indigo-600 hover:bg-indigo-700"
+                        size="sm"
+                        className="bg-[#FD8B0A] hover:bg-[#e57a00] text-white h-[36px] px-[16px] font-medium rounded-[6px] transition-colors border-0"
                     >
                         {isPending ? (
-                            <>
-                                <Loader2 className="mr-2 h-4 w-4 animate-spin" />
-                                Creating...
-                            </>
+                            <Loader2 className="h-[14px] w-[14px] animate-spin" />
                         ) : (
-                            'Create Assignment'
+                            <>
+                                <Plus className="mr-[4px] h-[14px] w-[14px] stroke-2" />
+                                Add
+                            </>
                         )}
                     </Button>
-                </form>
-            </CardContent>
-        </Card>
+                </div>
+
+                {(state?.error || state?.success) && (
+                    <p className={`text-[13px] font-medium ${state?.error ? 'text-red-600' : 'text-[#015A86]'}`}>
+                        {state?.error || state?.success}
+                    </p>
+                )}
+            </form>
+        </div>
     )
 }

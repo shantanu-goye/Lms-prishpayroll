@@ -7,10 +7,11 @@ export async function createAssignment(prevState: any, formData: FormData) {
   const title = formData.get('title') as string
   const description = formData.get('description') as string
   const dueDate = formData.get('dueDate') as string
+  const moduleId = parseInt(formData.get('moduleId') as string)
   const courseId = parseInt(formData.get('courseId') as string)
 
-  if (!title || !courseId) {
-    return { error: 'Title and Course are required', success: '' }
+  if (!title || !moduleId) {
+    return { error: 'Title and Module are required', success: '' }
   }
 
   try {
@@ -19,7 +20,7 @@ export async function createAssignment(prevState: any, formData: FormData) {
         title,
         description,
         dueDate: dueDate ? new Date(dueDate) : null,
-        courseId,
+        moduleId,
       },
     })
     revalidatePath(`/dashboard/admin/courses/${courseId}`)
