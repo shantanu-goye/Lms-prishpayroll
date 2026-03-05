@@ -1,0 +1,81 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "sqlite"
+  url      = env("DATABASE_URL")
+}
+
+model User {
+  id               Int          @id @default(autoincrement())
+  email            String       @unique
+  password         String
+  name             String
+  role             String       @default("STUDENT")
+  createdAt        DateTime     @default(now())
+  updatedAt        DateTime     @updatedAt
+  address          String?
+  dob              DateTime?
+  employmentStatus String?
+  phone            String?
+  courses          Course[]
+  enrollments      Enrollment[]
+  fees             Fee[]
+  submissions      Submission[]
+}
+
+model Course {
+  id           Int          @id @default(autoincrement())
+  title        String
+  description  String?
+  price        Float        @default(0)
+  instructorId Int
+  assignments  Assignment[]
+  instructor   User         @relation(fields: [instructorId], references: [id])
+  enrollments  Enrollment[]
+  fees         Fee[]
+}
+
+model Enrollment {
+  id          Int      @id @default(autoincrement())
+  userId      Int
+  courseId    Int
+  agreedPrice Float?
+  enrolledAt  DateTime @default(now())
+  course      Course   @relation(fields: [courseId], references: [id])
+  user        User     @relation(fields: [userId], references: [id])
+
+  @@unique([userId, courseId])
+}
+
+model Assignment {
+  id          Int          @id @default(autoincrement())
+  title       String
+  description String?
+  dueDate     DateTime?
+  courseId    Int
+  course      Course       @relation(fields: [courseId], references: [id])
+  submissions Submission[]
+}
+
+model Submission {
+  id           Int        @id @default(autoincrement())
+  assignmentId Int
+  studentId    Int
+  filePath     String
+  submittedAt  DateTime   @default(now())
+  student      User       @relation(fields: [studentId], references: [id])
+  assignment   Assignment @relation(fields: [assignmentId], references: [id])
+}
+
+model Fee {
+  id        Int       @id @default(autoincrement())
+  studentId Int
+  courseId  Int?
+  amount    Float
+  status    String    @default("PENDING")
+  dueDate   DateTime?
+  course    Course?   @relation(fields: [courseId], references: [id])
+  student   User      @relation(fields: [studentId], references: [id])
+}

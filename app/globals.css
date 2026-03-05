@@ -1,0 +1,140 @@
+@import "tailwindcss";
+@import "tw-animate-css";
+@import "shadcn/tailwind.css";
+
+@custom-variant dark (&:is(.dark *));
+
+@theme inline {
+  --color-background: var(--background);
+  --color-foreground: var(--foreground);
+  --font-sans: var(--font-inter);
+  --font-heading: var(--font-poppins);
+
+  --color-primary: var(--primary);
+  --color-primary-foreground: var(--primary-foreground);
+
+  --color-secondary: var(--secondary);
+  --color-secondary-foreground: var(--secondary-foreground);
+
+  --color-accent: var(--accent);
+  --color-accent-foreground: var(--accent-foreground);
+
+  --color-destructive: var(--destructive);
+  --color-destructive-foreground: var(--destructive-foreground);
+
+  --color-muted: var(--muted);
+  --color-muted-foreground: var(--muted-foreground);
+
+  --color-card: var(--card);
+  --color-card-foreground: var(--card-foreground);
+
+  --color-popover: var(--popover);
+  --color-popover-foreground: var(--popover-foreground);
+
+  --color-border: var(--border);
+  --color-input: var(--input);
+  --color-ring: var(--ring);
+
+  --radius-sm: calc(var(--radius) - 4px);
+  --radius-md: calc(var(--radius) - 2px);
+  --radius-lg: var(--radius);
+  --radius-xl: calc(var(--radius) + 4px);
+}
+
+:root {
+  --radius: 0.5rem;
+
+  /* Brand Colors */
+  /* Primary Blue #1E40AF -> hsl(226, 71%, 40%) */
+  --primary: hsl(226 71% 40%);
+  --primary-foreground: hsl(0 0% 100%);
+
+  /* Secondary Teal #0D9488 -> hsl(175, 84%, 32%) */
+  --secondary: hsl(175 84% 32%);
+  --secondary-foreground: hsl(0 0% 100%);
+
+  /* Accent Orange #F97316 -> hsl(27, 96%, 53%) */
+  --accent: hsl(27 96% 53%);
+  --accent-foreground: hsl(0 0% 100%);
+
+  /* Neutrals */
+  /* Background #F8FAFC -> hsl(210, 40%, 98%) */
+  --background: hsl(210 40% 98%);
+  /* Foreground #111827 -> hsl(220, 13%, 13%) */
+  --foreground: hsl(220 13% 13%);
+
+  /* Card #FFFFFF */
+  --card: hsl(0 0% 100%);
+  --card-foreground: hsl(220 13% 13%);
+
+  /* Popover */
+  --popover: hsl(0 0% 100%);
+  --popover-foreground: hsl(220 13% 13%);
+
+  /* Muted #F1F5F9 */
+  --muted: hsl(210 40% 96%);
+  /* Muted Foreground #6B7280 */
+  --muted-foreground: hsl(215 16% 47%);
+
+  /* Destructive #DC2626 */
+  --destructive: hsl(0 84% 60%);
+  --destructive-foreground: hsl(0 0% 100%);
+
+  /* Border #E5E7EB */
+  --border: hsl(220 13% 91%);
+  /* Input */
+  --input: hsl(220 13% 91%);
+  /* Ring (Primary) */
+  --ring: hsl(226 71% 40%);
+
+  /* Sidebar (Matches Card/Background) */
+  --sidebar: hsl(0 0% 100%);
+  --sidebar-foreground: hsl(220 13% 13%);
+  --sidebar-primary: hsl(226 71% 40%);
+  --sidebar-primary-foreground: hsl(0 0% 100%);
+  --sidebar-accent: hsl(210 40% 96%);
+  --sidebar-accent-foreground: hsl(226 71% 40%);
+  --sidebar-border: hsl(220 13% 91%);
+  --sidebar-ring: hsl(226 71% 40%);
+}
+
+.dark {
+  /* Dark Mode Values (Optional - generated approximations for now) */
+  --background: hsl(222 47% 11%);
+  --foreground: hsl(210 40% 98%);
+  --card: hsl(222 47% 11%);
+  --card-foreground: hsl(210 40% 98%);
+  --popover: hsl(222 47% 11%);
+  --popover-foreground: hsl(210 40% 98%);
+  --primary: hsl(217 91% 60%);
+  --primary-foreground: hsl(222 47% 11%);
+  --secondary: hsl(175 84% 32%);
+  --secondary-foreground: hsl(0 0% 100%);
+  --muted: hsl(217 16% 26%);
+  --muted-foreground: hsl(215 20% 65%);
+  --accent: hsl(217 16% 26%);
+  --accent-foreground: hsl(210 40% 98%);
+  --destructive: hsl(0 62% 30%);
+  --destructive-foreground: hsl(210 40% 98%);
+  --border: hsl(217 16% 26%);
+  --input: hsl(217 16% 26%);
+  --ring: hsl(212.7 26.8% 83.9%);
+}
+
+@layer base {
+  * {
+    @apply border-border outline-ring/50;
+  }
+  body {
+    @apply bg-background text-foreground;
+    font-family: var(--font-inter), sans-serif;
+  }
+  h1,
+  h2,
+  h3,
+  h4,
+  h5,
+  h6 {
+    font-family: var(--font-heading), sans-serif;
+  }
+}
