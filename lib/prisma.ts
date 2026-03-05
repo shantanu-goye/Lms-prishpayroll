@@ -1,6 +1,19 @@
 import { PrismaClient } from '@prisma/client'
+import { PrismaLibSql } from '@prisma/adapter-libsql'
+import { createClient } from '@libsql/client'
 
 const prismaClientSingleton = () => {
+  // Use Turso in production, local SQLite in development
+  if (process.env.TURSO_DATABASE_URL) {
+    const libsql = createClient({
+      url: process.env.TURSO_DATABASE_URL,
+      authToken: process.env.TURSO_AUTH_TOKEN,
+    })
+    const adapter = new PrismaLibSql(libsql)
+    // @ts-ignore - adapter is valid with driverAdapters preview feature
+    return new PrismaClient({ adapter })
+  }
+  
   return new PrismaClient()
 }
 

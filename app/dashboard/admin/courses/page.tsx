@@ -11,8 +11,9 @@ export default async function CoursesPage() {
     const courses = await prisma.course.findMany({
         include: {
             instructor: true,
+            modules: true,
             _count: {
-                select: { enrollments: true, modules: true },
+                select: { enrollments: true },
             },
         },
         orderBy: { id: 'desc' },
@@ -46,7 +47,7 @@ export default async function CoursesPage() {
                                 </div>
                                 <div className="flex items-center gap-[4px] text-[#015A86] font-medium">
                                     <BookOpen className="h-[16px] w-[16px]" />
-                                    <span>{course._count.modules} Modules</span>
+                                    <span>{course.modules.length} Modules</span>
                                 </div>
                             </div>
                         </CardContent>
