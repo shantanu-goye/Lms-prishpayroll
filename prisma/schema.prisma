@@ -32,20 +32,20 @@ model Course {
   description  String?
   price        Float        @default(0)
   instructorId Int
-  modules      Module[]
   instructor   User         @relation(fields: [instructorId], references: [id])
   enrollments  Enrollment[]
   fees         Fee[]
+  modules      Module[]
 }
 
 model Enrollment {
   id          Int      @id @default(autoincrement())
   userId      Int
-  courseId     Int
+  courseId    Int
   agreedPrice Float?
   enrolledAt  DateTime @default(now())
-  course      Course   @relation(fields: [courseId], references: [id], onDelete: Cascade)
   user        User     @relation(fields: [userId], references: [id])
+  course      Course   @relation(fields: [courseId], references: [id], onDelete: Cascade)
 
   @@unique([userId, courseId])
 }
@@ -54,9 +54,9 @@ model Module {
   id          Int          @id @default(autoincrement())
   title       String
   order       Int          @default(0)
-  courseId     Int
-  course      Course       @relation(fields: [courseId], references: [id], onDelete: Cascade)
+  courseId    Int
   assignments Assignment[]
+  course      Course       @relation(fields: [courseId], references: [id], onDelete: Cascade)
 }
 
 model Assignment {
@@ -65,6 +65,7 @@ model Assignment {
   description String?
   dueDate     DateTime?
   moduleId    Int
+  fileUrl     String?
   module      Module       @relation(fields: [moduleId], references: [id], onDelete: Cascade)
   submissions Submission[]
 }
@@ -76,8 +77,9 @@ model Submission {
   filePath     String
   status       String     @default("PENDING")
   submittedAt  DateTime   @default(now())
-  student      User       @relation(fields: [studentId], references: [id])
+  feedback     String?
   assignment   Assignment @relation(fields: [assignmentId], references: [id], onDelete: Cascade)
+  student      User       @relation(fields: [studentId], references: [id])
 }
 
 model Fee {
@@ -89,4 +91,11 @@ model Fee {
   dueDate   DateTime?
   course    Course?   @relation(fields: [courseId], references: [id])
   student   User      @relation(fields: [studentId], references: [id])
+}
+
+model Setting {
+  id        Int      @id @default(autoincrement())
+  key       String   @unique
+  value     String   // AES-256-CBC encrypted
+  updatedAt DateTime @updatedAt
 }

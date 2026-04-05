@@ -189,6 +189,7 @@ export default async function CourseDetailsPage({ params }: { params: { id: stri
                                                                         submissionId={sub.id}
                                                                         courseId={courseId}
                                                                         currentStatus={sub.status}
+                                                                        currentFeedback={sub.feedback}
                                                                     />
                                                                 </div>
                                                             </div>

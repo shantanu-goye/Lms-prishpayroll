@@ -16,13 +16,14 @@ export default function SubmissionForm({ assignmentId }: { assignmentId: number 
 
     return (
         <div className="mt-[16px]">
-            <form action={formAction} className="flex flex-col sm:flex-row gap-[16px] items-end">
+            <form action={formAction} encType="multipart/form-data" className="flex flex-col sm:flex-row gap-[16px] items-end">
                 <input type="hidden" name="assignmentId" value={assignmentId} />
                 <div className="flex-1 w-full space-y-[8px]">
                     <Input
                         name="file"
                         type="file"
                         required
+                        accept=".doc,.docx,.pdf,.jpg,.jpeg,.png"
                         className="cursor-pointer file:cursor-pointer file:mr-[16px] file:py-[4px] file:px-[16px] file:rounded-[6px] file:border-0 file:text-[12px] file:font-medium file:bg-[#F5F8FA] file:text-[#015A86] hover:file:bg-[#E5E7EB] transition-all h-[40px] border-dashed border-[#E5E7EB] focus-visible:ring-[#015A86]"
                     />
                 </div>

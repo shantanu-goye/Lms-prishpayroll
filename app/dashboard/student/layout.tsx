@@ -9,6 +9,7 @@ export default function StudentLayout({
 }) {
     const navItems = [
         { label: 'My Courses', href: '/dashboard/student', iconName: 'BookOpen' },
+        { label: 'Assignments', href: '/dashboard/student/assignments', iconName: 'FileText' },
     ]
 
     const handleLogout = async () => {

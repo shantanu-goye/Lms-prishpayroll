@@ -2,6 +2,7 @@
 
 import prisma from '@/lib/prisma'
 import { revalidatePath } from 'next/cache'
+import { uploadToS3 } from '@/lib/s3'
 
 export async function createAssignment(prevState: any, formData: FormData) {
   const title = formData.get('title') as string
@@ -15,10 +16,18 @@ export async function createAssignment(prevState: any, formData: FormData) {
   }
 
   try {
+    let fileUrl = null
+    const file = formData.get('file') as File
+    if (file && file.size > 0) {
+      const uploadResult = await uploadToS3(file, 'assignments')
+      fileUrl = uploadResult.url
+    }
+
     await prisma.assignment.create({
       data: {
         title,
         description,
+        fileUrl,
         dueDate: dueDate ? new Date(dueDate) : null,
         moduleId,
       },
@@ -41,11 +50,19 @@ export async function updateAssignment(id: number, courseId: number, prevState: 
     }
 
     try {
+        let fileUrl = undefined
+        const file = formData.get('file') as File
+        if (file && file.size > 0) {
+            const uploadResult = await uploadToS3(file, 'assignments')
+            fileUrl = uploadResult.url
+        }
+
         await prisma.assignment.update({
             where: { id },
             data: {
                 title,
                 description,
+                fileUrl,
                 dueDate: dueDate ? new Date(dueDate) : null,
             },
         })

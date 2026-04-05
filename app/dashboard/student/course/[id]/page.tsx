@@ -122,9 +122,21 @@ export default async function StudentCoursePage({ params }: { params: { id: stri
                                                 )}
                                             </div>
                                             {assignment.dueDate && (
-                                                <div className={`flex items-center gap-[6px] px-[12px] py-[6px] rounded-[6px] text-[12px] font-medium h-fit whitespace-nowrap ${isOverdue ? 'bg-red-50 text-red-600 border border-red-200' : 'bg-[#F5F8FA] text-[#015A86] border border-[#015A86]'}`}>
-                                                    <Clock className="h-[14px] w-[14px] stroke-2" />
-                                                    Due: {new Date(assignment.dueDate).toLocaleDateString()}
+                                                <div className="flex flex-col items-end gap-[8px]">
+                                                    <div className={`flex items-center gap-[6px] px-[12px] py-[6px] rounded-[6px] text-[12px] font-medium h-fit whitespace-nowrap ${isOverdue ? 'bg-red-50 text-red-600 border border-red-200' : 'bg-[#F5F8FA] text-[#015A86] border border-[#015A86]'}`}>
+                                                        <Clock className="h-[14px] w-[14px] stroke-2" />
+                                                        Due: {new Date(assignment.dueDate).toLocaleDateString()}
+                                                    </div>
+                                                    {assignment.fileUrl && (
+                                                        <a 
+                                                            href={assignment.fileUrl} 
+                                                            target="_blank" 
+                                                            className="flex items-center gap-[6px] text-[13px] font-bold text-[#FD8B0A] hover:underline transition-all"
+                                                        >
+                                                            <ExternalLink className="h-[14px] w-[14px]" />
+                                                            Materials
+                                                        </a>
+                                                    )}
                                                 </div>
                                             )}
                                         </div>
@@ -153,6 +165,11 @@ export default async function StudentCoursePage({ params }: { params: { id: stri
                                                             <p className="text-[12px] text-[#0B2E3F] opacity-60 mt-[2px]">
                                                                 Submitted on {new Date(submission.submittedAt).toLocaleDateString()} at {new Date(submission.submittedAt).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}
                                                             </p>
+                                                            {submission.feedback && (
+                                                                <div className="mt-3 p-3 bg-[#F5F8FA] rounded-lg border border-blue-100 italic text-[13px] text-[#0B2E3F]">
+                                                                    "{submission.feedback}"
+                                                                </div>
+                                                            )}
                                                         </div>
                                                     </div>
                                                     <Button asChild variant="outline" size="sm" className="font-medium border-[#015A86] text-[#015A86] hover:bg-[#F5F8FA] h-[36px] px-[16px] rounded-[6px] transition-colors">

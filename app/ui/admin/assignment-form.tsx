@@ -19,7 +19,7 @@ export default function AssignmentForm({ moduleId, courseId }: { moduleId: numbe
     return (
         <div className="bg-[#F5F8FA] rounded-[8px] border border-[#E5E7EB] p-[16px] mt-[16px]">
             <p className="text-[12px] font-bold text-[#015A86] uppercase tracking-wider mb-[12px]">Add Assignment</p>
-            <form action={formAction} className="space-y-[12px]">
+            <form action={formAction} encType="multipart/form-data" className="space-y-[12px]">
                 <input type="hidden" name="moduleId" value={moduleId} />
                 <input type="hidden" name="courseId" value={courseId} />
                 <Input
@@ -41,6 +41,15 @@ export default function AssignmentForm({ moduleId, courseId }: { moduleId: numbe
                             name="dueDate"
                             type="datetime-local"
                             className="border-[#E5E7EB] focus-visible:ring-[#015A86] rounded-[6px] h-[36px] text-[14px] bg-white"
+                        />
+                    </div>
+                    <div className="flex-1 space-y-[4px]">
+                        <Label className="text-[12px] text-[#0B2E3F]">Materials (PDF/Docs)</Label>
+                        <Input
+                            name="file"
+                            type="file"
+                            accept=".pdf,.doc,.docx"
+                            className="border-[#E5E7EB] focus-visible:ring-[#015A86] rounded-[6px] h-[36px] text-[12px] bg-white"
                         />
                     </div>
                     <Button

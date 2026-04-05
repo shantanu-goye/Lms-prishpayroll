@@ -44,7 +44,7 @@ export default function EditAssignmentDialog({ assignment }: { assignment: any }
                         Update assignment details.
                     </DialogDescription>
                 </DialogHeader>
-                <form action={formAction} className="space-y-[24px]">
+                <form action={formAction} encType="multipart/form-data" className="space-y-[24px]">
                     <div className="space-y-[8px]">
                         <Label htmlFor="title" className="text-[#0B2E3F] font-medium text-[14px]">Title</Label>
                         <Input id="title" name="title" defaultValue={assignment.title} required className="border-[#E5E7EB] focus-visible:ring-[#015A86] rounded-[6px] h-[40px]" />
@@ -66,9 +66,22 @@ export default function EditAssignmentDialog({ assignment }: { assignment: any }
                         <Input
                             id="dueDate"
                             name="dueDate"
-                            type="date"
-                            defaultValue={assignment.dueDate ? new Date(assignment.dueDate).toISOString().split('T')[0] : ''}
+                            type="datetime-local"
+                            defaultValue={assignment.dueDate ? new Date(assignment.dueDate).toISOString().slice(0, 16) : ''}
                             className="border-[#E5E7EB] focus-visible:ring-[#015A86] rounded-[6px] h-[40px]"
+                        />
+                    </div>
+
+                    <div className="space-y-[8px]">
+                        <Label htmlFor="file" className="text-[#0B2E3F] font-medium text-[14px]">
+                            Update Materials {assignment.fileUrl && <span className="text-[12px] text-[#015A86] font-normal ml-2">(Current file exists)</span>}
+                        </Label>
+                        <Input
+                            id="file"
+                            name="file"
+                            type="file"
+                            accept=".pdf,.doc,.docx"
+                            className="border-[#E5E7EB] focus-visible:ring-[#015A86] rounded-[6px] h-[40px] text-[13px]"
                         />
                     </div>
 

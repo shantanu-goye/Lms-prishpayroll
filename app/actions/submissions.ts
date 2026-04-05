@@ -3,8 +3,10 @@
 import prisma from '@/lib/prisma'
 import { revalidatePath } from 'next/cache'
 import { verifySession } from '@/lib/auth'
-import { writeFile, mkdir } from 'fs/promises'
+import { uploadToS3, getSignedFileUrl } from '@/lib/s3'
 import path from 'path'
+import { sendMail } from '@/lib/mailer'
+import { submissionFeedbackEmailTemplate } from '@/lib/email-templates'
 
 export async function submitAssignment(prevState: any, formData: FormData) {
   const assignmentId = parseInt(formData.get('assignmentId') as string)
@@ -20,14 +22,24 @@ export async function submitAssignment(prevState: any, formData: FormData) {
   }
 
   try {
-    const buffer = Buffer.from(await file.arrayBuffer())
-    const filename = `${Date.now()}_${file.name.replace(/\s+/g, '_')}`
-    const uploadDir = path.join(process.cwd(), 'public/uploads')
-    
-    await mkdir(uploadDir, { recursive: true })
-    await writeFile(path.join(uploadDir, filename), buffer)
+    // 1. Validate File type
+    const allowedTypes = [
+      'application/pdf',
+      'application/msword',
+      'application/vnd.openxmlformats-officedocument.wordprocessingml.document',
+      'image/jpeg',
+      'image/png'
+    ]
+    const allowedExtensions = ['.pdf', '.doc', '.docx', '.jpg', '.jpeg', '.png']
+    const fileExtension = path.extname(file.name).toLowerCase()
 
-    const filePath = `/uploads/${filename}`
+    if (!allowedTypes.includes(file.type) && !allowedExtensions.includes(fileExtension)) {
+      return { error: 'Invalid file type. Allowed: PDF, DOC, DOCX, JPG, PNG', success: '' }
+    }
+
+    // 2. Upload to S3
+    const { url } = await uploadToS3(file, 'submissions')
+    const filePath = url
 
     await prisma.submission.create({
       data: {
@@ -45,6 +57,7 @@ export async function submitAssignment(prevState: any, formData: FormData) {
     
     if (assignment) {
       revalidatePath(`/dashboard/student/course/${assignment.module.courseId}`)
+      revalidatePath('/dashboard/student/assignments')
     }
     
     return { success: 'Assignment submitted successfully', error: '' }
@@ -70,5 +83,69 @@ export async function updateSubmissionStatus(submissionId: number, status: strin
   } catch (error) {
     console.error('Failed to update submission status:', error)
     return { error: 'Failed to update submission status' }
+  }
+}
+
+export async function getSubmissionFileUrl(submissionId: number) {
+  const session = await verifySession()
+  if (!session) {
+    return { error: 'Unauthorized' }
+  }
+
+  try {
+    const submission = await prisma.submission.findUnique({
+      where: { id: submissionId },
+    })
+
+    if (!submission) {
+      return { error: 'Submission not found' }
+    }
+
+    // Extract key from the stored URL
+    const urlParts = submission.filePath.split('/')
+    const key = urlParts.slice(-2).join('/') // Get 'submissions/filename'
+
+    const signedUrl = await getSignedFileUrl(key)
+
+    return { signedUrl }
+  } catch (error) {
+    console.error('Failed to generate signed URL:', error)
+    return { error: 'Failed to generate file URL' }
+  }
+}
+  const session = await verifySession()
+  if (!session || session.role !== 'ADMIN') {
+    return { error: 'Unauthorized' }
+  }
+
+  try {
+    const updatedSubmission = await prisma.submission.update({
+      where: { id: submissionId },
+      data: { feedback, status },
+      include: {
+        student: true,
+        assignment: true,
+      },
+    })
+
+    // Send feedback email to student
+    await sendMail({
+      to: updatedSubmission.student.email,
+      subject: `Assignment Feedback: ${updatedSubmission.assignment.title}`,
+      html: submissionFeedbackEmailTemplate(
+        updatedSubmission.student.name,
+        updatedSubmission.assignment.title,
+        status,
+        feedback
+      ),
+    })
+
+    revalidatePath(`/dashboard/admin/courses/${courseId}`)
+    revalidatePath('/dashboard/student/assignments')
+    revalidatePath('/dashboard/admin/submissions')
+    return { success: 'Feedback updated successfully' }
+  } catch (error) {
+    console.error('Failed to update submission feedback:', error)
+    return { error: 'Failed to update submission feedback' }
   }
 }

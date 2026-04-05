@@ -2,6 +2,8 @@
 
 import prisma from '@/lib/prisma'
 import { revalidatePath } from 'next/cache'
+import { sendMail } from '@/lib/mailer'
+import { feeReminderEmailTemplate } from '@/lib/email-templates'
 
 export async function createFee(prevState: any, formData: FormData) {
   const studentId = parseInt(formData.get('studentId') as string)
@@ -51,5 +53,39 @@ export async function deleteFee(id: number) {
     revalidatePath('/dashboard/admin/fees')
   } catch (error) {
     console.error('Failed to delete fee:', error)
+  }
+}
+
+export async function sendFeeReminder(feeId: number) {
+  try {
+    const fee = await prisma.fee.findUnique({
+      where: { id: feeId },
+      include: {
+        student: true,
+        course: true,
+      },
+    })
+
+    if (!fee || !fee.student || !fee.course) {
+      return { error: 'Fee not found' }
+    }
+
+    const dueDate = fee.dueDate ? new Date(fee.dueDate).toLocaleDateString() : 'ASAP'
+
+    await sendMail({
+      to: fee.student.email,
+      subject: `Fee Payment Reminder: ${fee.course.title}`,
+      html: feeReminderEmailTemplate(
+        fee.student.name,
+        fee.course.title,
+        fee.amount,
+        dueDate
+      ),
+    })
+
+    return { success: 'Reminder sent successfully' }
+  } catch (error) {
+    console.error('Failed to send fee reminder:', error)
+    return { error: 'Failed to send reminder' }
   }
 }

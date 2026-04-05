@@ -9,9 +9,9 @@ import {
     TableRow,
 } from '@/components/ui/table'
 import { Badge } from '@/components/ui/badge'
-import { deleteFee, updateFeeStatus } from '@/app/actions/fees'
+import { deleteFee, updateFeeStatus, sendFeeReminder } from '@/app/actions/fees'
 import { Button } from '@/components/ui/button'
-import { Check, Trash2, AlertCircle, CheckCircle2, Wallet, Users, LayoutDashboard, Receipt } from 'lucide-react'
+import { Check, Trash2, AlertCircle, CheckCircle2, Wallet, Users, LayoutDashboard, Receipt, Mail } from 'lucide-react'
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
 
@@ -264,20 +264,36 @@ export default async function FeesPage() {
                                                             <TableCell className="text-right px-[24px] py-[16px]">
                                                                 <div className="flex justify-end gap-[8px]">
                                                                     {fee.status === 'PENDING' && (
-                                                                        <form action={async () => {
-                                                                            'use server'
-                                                                            await updateFeeStatus(fee.id, 'PAID')
-                                                                        }}>
-                                                                            <Button
-                                                                                variant="outline"
-                                                                                size="icon"
-                                                                                className="border-2 border-[#015A86] text-[#015A86] bg-transparent hover:bg-[#015A86] hover:text-white h-[36px] w-[36px] rounded-[6px] transition-colors"
-                                                                                type="submit"
-                                                                                title="Mark as Paid"
-                                                                            >
-                                                                                <Check className="h-[18px] w-[18px] stroke-2" />
-                                                                            </Button>
-                                                                        </form>
+                                                                        <>
+                                                                            <form action={async () => {
+                                                                                'use server'
+                                                                                await updateFeeStatus(fee.id, 'PAID')
+                                                                            }}>
+                                                                                <Button
+                                                                                    variant="outline"
+                                                                                    size="icon"
+                                                                                    className="border-2 border-[#015A86] text-[#015A86] bg-transparent hover:bg-[#015A86] hover:text-white h-[36px] w-[36px] rounded-[6px] transition-colors"
+                                                                                    type="submit"
+                                                                                    title="Mark as Paid"
+                                                                                >
+                                                                                    <Check className="h-[18px] w-[18px] stroke-2" />
+                                                                                </Button>
+                                                                            </form>
+                                                                            <form action={async () => {
+                                                                                'use server'
+                                                                                await sendFeeReminder(fee.id)
+                                                                            }}>
+                                                                                <Button
+                                                                                    variant="outline"
+                                                                                    size="icon"
+                                                                                    className="border-2 border-[#FD8B0A] text-[#FD8B0A] bg-transparent hover:bg-[#FD8B0A] hover:text-white h-[36px] w-[36px] rounded-[6px] transition-colors"
+                                                                                    type="submit"
+                                                                                    title="Send Reminder"
+                                                                                >
+                                                                                    <Mail className="h-[18px] w-[18px] stroke-2" />
+                                                                                </Button>
+                                                                            </form>
+                                                                        </>
                                                                     )}
                                                                     <form action={async () => {
                                                                         'use server'

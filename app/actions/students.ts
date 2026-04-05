@@ -3,6 +3,8 @@
 import prisma from '@/lib/prisma'
 import bcrypt from 'bcryptjs'
 import { revalidatePath } from 'next/cache'
+import { sendMail } from '@/lib/mailer'
+import { welcomeEmailTemplate } from '@/lib/email-templates'
 
 export async function createStudent(prevState: any, formData: FormData) {
   const name = formData.get('name') as string
@@ -78,6 +80,14 @@ export async function createStudent(prevState: any, formData: FormData) {
       }
     })
 
+    // Send welcome email with plain password
+    const loginUrl = `${process.env.NEXT_PUBLIC_BASE_URL || 'http://localhost:3000'}/login`
+    await sendMail({
+      to: email,
+      subject: 'Welcome to Student CRM - Your Account Details',
+      html: welcomeEmailTemplate(name, email, password, loginUrl),
+    })
+
     revalidatePath('/dashboard/admin/students')
     return { success: 'Student created successfully', error: '' }
   } catch (error) {
@@ -129,7 +139,7 @@ export async function updateStudent(id: number, prevState: any, formData: FormDa
 
 export async function deleteStudent(id: number) {
   try {
-    await prisma.user.delete({
+    await prisma.user.deleteMany({
       where: { id },
     })
     revalidatePath('/dashboard/admin/students')

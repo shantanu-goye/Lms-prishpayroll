@@ -12,6 +12,8 @@ export default function AdminLayout({
         { label: 'Students', href: '/dashboard/admin/students', iconName: 'Users' },
         { label: 'Courses', href: '/dashboard/admin/courses', iconName: 'BookOpen' },
         { label: 'Fees', href: '/dashboard/admin/fees', iconName: 'CreditCard' },
+        { label: 'Submissions', href: '/dashboard/admin/submissions', iconName: 'FileText' },
+        { label: 'Settings', href: '/dashboard/admin/settings', iconName: 'Settings' },
     ]
 
     const handleLogout = async () => {

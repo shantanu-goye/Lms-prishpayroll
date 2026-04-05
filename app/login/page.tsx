@@ -1,6 +1,7 @@
 'use client'
 
 import { useState } from 'react'
+import Image from 'next/image'
 import { useActionState } from 'react'
 import { Card, CardHeader, CardContent, CardTitle, CardDescription, CardFooter } from "@/components/ui/card"
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
@@ -8,7 +9,7 @@ import { Label } from "@/components/ui/label"
 import { Input } from "@/components/ui/input"
 import { Button } from "@/components/ui/button"
 import { login } from '@/app/actions/auth'
-import { Loader2, ShieldCheck, GraduationCap, ArrowRight } from 'lucide-react'
+import { Loader2, ArrowRight } from 'lucide-react'
 
 const initialState = {
     error: '',
@@ -34,21 +35,25 @@ export default function LoginPage() {
     return (
         <div className="min-h-screen grid lg:grid-cols-2">
             {/* Visual Side (Hidden on Mobile) */}
-            <div className={`hidden lg:flex flex-col justify-center items-center p-12 text-white transition-colors duration-500 ${activeTab === 'admin' ? 'bg-primary' : 'bg-secondary'}`}>
-                <div className="max-w-md space-y-6 text-center">
-                    <div className="mx-auto w-24 h-24 bg-white/20 rounded-3xl flex items-center justify-center backdrop-blur-lg shadow-xl">
-                        {activeTab === 'admin' ? (
-                            <ShieldCheck className="w-12 h-12 text-white" />
-                        ) : (
-                            <GraduationCap className="w-12 h-12 text-white" />
-                        )}
+            <div className={`hidden lg:flex flex-col justify-center items-center p-12 text-white transition-colors duration-500 ${activeTab === 'admin' ? 'bg-[#015A86]' : 'bg-[#0B2E3F]'}`}>
+                <div className="max-w-md space-y-8 text-center">
+                    {/* Logo on white pill */}
+                    <div className="mx-auto bg-white rounded-2xl px-8 py-5 inline-flex shadow-2xl">
+                        <Image
+                            src="/logo.png"
+                            alt="PRISH Payroll Services"
+                            width={180}
+                            height={70}
+                            className="object-contain"
+                            priority
+                        />
                     </div>
                     <h1 className="text-4xl font-bold font-heading">
                         {activeTab === 'admin' ? 'Admin Portal' : 'Student Learning Hub'}
                     </h1>
                     <p className="text-lg text-white/90">
                         {activeTab === 'admin'
-                            ? 'Manage courses, verified students, and administrative tasks efficiently.'
+                            ? 'Manage courses, students, and payroll data efficiently.'
                             : 'Access your courses, track progress, and submit assignments with ease.'}
                     </p>
                 </div>
@@ -57,7 +62,18 @@ export default function LoginPage() {
             {/* Login Form Side */}
             <div className="flex items-center justify-center p-6 bg-background">
                 <Card className="w-full max-w-md border-none shadow-none">
-                    <CardHeader className="text-center">
+                    <CardHeader className="text-center pb-2">
+                        {/* Logo visible on mobile / also shown on form side */}
+                        <div className="flex justify-center mb-4">
+                            <Image
+                                src="/logo.png"
+                                alt="PRISH Payroll Services"
+                                width={140}
+                                height={55}
+                                className="object-contain"
+                                priority
+                            />
+                        </div>
                         <h2 className="text-2xl font-bold font-heading text-foreground">Welcome Back</h2>
                         <CardDescription>Please sign in to access your account</CardDescription>
                     </CardHeader>

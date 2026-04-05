@@ -2,6 +2,7 @@
 
 import { useState } from 'react'
 import Link from 'next/link'
+import Image from 'next/image'
 import { usePathname } from 'next/navigation'
 import { Button } from '@/components/ui/button'
 import { Separator } from '@/components/ui/separator'
@@ -15,6 +16,8 @@ import {
     CreditCard,
     ShieldCheck,
     GraduationCap,
+    FileText,
+    IndianRupee,
     LucideIcon
 } from 'lucide-react'
 import { cn } from '@/lib/utils'
@@ -27,6 +30,8 @@ const iconMap: Record<string, LucideIcon> = {
     CreditCard,
     ShieldCheck,
     GraduationCap,
+    FileText,
+    IndianRupee,
 }
 
 interface NavItem {
@@ -75,18 +80,23 @@ export default function Sidebar({
                 )}
             </Button>
 
-            <div className={cn("p-[32px] pb-[16px]", isCollapsed && "p-[20px]")}>
-                <div className="flex items-center gap-[12px] px-[8px]">
-                    <div className="h-[40px] w-[40px] min-w-[40px] bg-[#015A86] rounded-[12px] flex items-center justify-center shadow-md">
-                        <HeaderIcon className="h-[24px] w-[24px] text-white stroke-2" />
-                    </div>
-                    {!isCollapsed && (
-                        <div className="overflow-hidden whitespace-nowrap">
-                            <h1 className="text-[20px] font-bold text-[#0B2E3F] tracking-tight leading-none">{headerTitle}</h1>
-                            <p className="text-[12px] uppercase font-bold text-[#FD8B0A] tracking-widest mt-[4px]">{headerSubtitle}</p>
+            <div className={cn("px-[24px] py-[24px] pb-[16px]", isCollapsed && "px-[16px] py-[20px]")}>
+                <Link href="/" className="flex items-center justify-center">
+                    {isCollapsed ? (
+                        <div className="h-[40px] w-[40px] min-w-[40px] bg-[#015A86] rounded-[10px] flex items-center justify-center shadow-md">
+                            <span className="text-white font-black text-[18px] leading-none">P</span>
                         </div>
+                    ) : (
+                        <Image
+                            src="/logo.png"
+                            alt="PRISH Payroll Services"
+                            width={160}
+                            height={60}
+                            className="object-contain"
+                            priority
+                        />
                     )}
-                </div>
+                </Link>
             </div>
 
             <nav className="mt-[16px] flex-1 px-[16px] space-y-[8px]">
