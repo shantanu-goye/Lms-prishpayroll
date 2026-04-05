@@ -6,6 +6,7 @@ import { notFound } from 'next/navigation'
 import { Card, CardHeader, CardTitle, CardContent, CardDescription } from '@/components/ui/card'
 import { Button } from '@/components/ui/button'
 import { ChevronLeft, GraduationCap, CheckCircle2, Clock, FileText, ExternalLink, XCircle, Layers } from 'lucide-react'
+import FileViewer from '@/components/FileViewer'
 
 export default async function StudentCoursePage({ params }: { params: { id: string } }) {
     const { id } = await params
@@ -172,12 +173,10 @@ export default async function StudentCoursePage({ params }: { params: { id: stri
                                                             )}
                                                         </div>
                                                     </div>
-                                                    <Button asChild variant="outline" size="sm" className="font-medium border-[#015A86] text-[#015A86] hover:bg-[#F5F8FA] h-[36px] px-[16px] rounded-[6px] transition-colors">
-                                                        <a href={submission.filePath} target="_blank" className="flex items-center gap-[6px]">
-                                                            <ExternalLink className="h-[14px] w-[14px] stroke-2" />
-                                                            View File
-                                                        </a>
-                                                    </Button>
+                                                    <FileViewer
+                                                        fileUrl={submission.filePath}
+                                                        className="font-medium border-[#015A86] text-[#015A86] hover:bg-[#F5F8FA] h-[36px] px-[16px] rounded-[6px] transition-colors inline-flex items-center gap-[6px] border"
+                                                    />
                                                 </div>
                                             ) : (
                                                 <div className="space-y-[12px]">

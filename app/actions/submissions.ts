@@ -3,7 +3,7 @@
 import prisma from '@/lib/prisma'
 import { revalidatePath } from 'next/cache'
 import { verifySession } from '@/lib/auth'
-import { uploadToS3, getSignedFileUrl } from '@/lib/s3'
+import { uploadToS3 } from '@/lib/s3'
 import path from 'path'
 import { sendMail } from '@/lib/mailer'
 import { submissionFeedbackEmailTemplate } from '@/lib/email-templates'
@@ -86,33 +86,7 @@ export async function updateSubmissionStatus(submissionId: number, status: strin
   }
 }
 
-export async function getSubmissionFileUrl(submissionId: number) {
-  const session = await verifySession()
-  if (!session) {
-    return { error: 'Unauthorized' }
-  }
-
-  try {
-    const submission = await prisma.submission.findUnique({
-      where: { id: submissionId },
-    })
-
-    if (!submission) {
-      return { error: 'Submission not found' }
-    }
-
-    // Extract key from the stored URL
-    const urlParts = submission.filePath.split('/')
-    const key = urlParts.slice(-2).join('/') // Get 'submissions/filename'
-
-    const signedUrl = await getSignedFileUrl(key)
-
-    return { signedUrl }
-  } catch (error) {
-    console.error('Failed to generate signed URL:', error)
-    return { error: 'Failed to generate file URL' }
-  }
-}
+export async function updateSubmissionFeedback(submissionId: number, feedback: string, status: string, courseId: number) {
   const session = await verifySession()
   if (!session || session.role !== 'ADMIN') {
     return { error: 'Unauthorized' }

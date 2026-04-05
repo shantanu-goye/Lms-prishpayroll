@@ -1,6 +1,5 @@
-import { S3Client, GetObjectCommand } from "@aws-sdk/client-s3";
+import { S3Client } from "@aws-sdk/client-s3";
 import { Upload } from "@aws-sdk/lib-storage";
-import { getSignedUrl } from "@aws-sdk/s3-request-presigner";
 
 if (!process.env.AWS_ACCESS_KEY_ID || !process.env.AWS_SECRET_ACCESS_KEY || !process.env.AWS_S3_BUCKET) {
   console.warn("S3 environment variables are not fully configured. File uploads specifically for assignments might fail.");
@@ -31,18 +30,10 @@ export async function uploadToS3(file: File, pathPrefix: string = "submissions")
 
   await upload.done();
 
-  // Use standard S3 URL format
-  const url = `https://${process.env.AWS_S3_BUCKET}.s3.${process.env.AWS_REGION || "ap-south-1"}.amazonaws.com/${key}`;
+  // Use CDN URL
+  const url = `http://media.pixelperfects.in/${key}`;
 
   return { url, key };
 }
 
-export async function getSignedFileUrl(key: string): Promise<string> {
-  const command = new GetObjectCommand({
-    Bucket: process.env.AWS_S3_BUCKET || "",
-    Key: key,
-  });
-
-  const signedUrl = await getSignedUrl(s3Client, command, { expiresIn: 3600 }); // 1 hour expiry
-  return signedUrl;
-}
+export default s3Client;

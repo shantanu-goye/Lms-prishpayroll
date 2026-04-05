@@ -4,6 +4,7 @@ import { Card, CardHeader, CardTitle, CardContent } from '@/components/ui/card'
 import { Badge } from '@/components/ui/badge'
 import { FileText, Clock, CheckCircle2, AlertCircle, ExternalLink } from 'lucide-react'
 import SubmissionForm from '@/app/ui/student/submission-form'
+import FileViewer from '@/components/FileViewer'
 
 export default async function StudentAssignmentsPage() {
     const session = await verifySession()
@@ -120,13 +121,12 @@ export default async function StudentAssignmentsPage() {
                                             <p className="text-[13px] text-[#0B2E3F]">
                                                 Submitted on: <span className="font-semibold">{new Date(assignment.submission.submittedAt).toLocaleDateString()}</span>
                                             </p>
-                                            <a 
-                                                href={assignment.submission.filePath} 
-                                                target="_blank" 
+                                            <FileViewer
+                                                fileUrl={assignment.submission.filePath}
                                                 className="inline-flex items-center text-[#015A86] hover:text-[#FD8B0A] font-medium text-[13px] gap-1"
                                             >
                                                 View file <FileText className="h-3 w-3" />
-                                            </a>
+                                            </FileViewer>
 
                                             {assignment.submission.feedback && (
                                                 <div className="mt-4 p-3 bg-white border border-blue-100 rounded-lg shadow-sm">
