@@ -103,6 +103,7 @@ export default function LoginPage() {
                                             id="s-email"
                                             name="email"
                                             type="email"
+                                            autoComplete="username"
                                             placeholder="student@school.com"
                                             required
                                             className="h-11 focus-visible:ring-secondary"
@@ -114,6 +115,7 @@ export default function LoginPage() {
                                             id="s-password"
                                             name="password"
                                             type="password"
+                                            autoComplete="current-password"
                                             required
                                             className="h-11 focus-visible:ring-secondary"
                                         />
@@ -142,6 +144,7 @@ export default function LoginPage() {
                                             id="a-email"
                                             name="email"
                                             type="email"
+                                            autoComplete="username"
                                             placeholder="admin@school.com"
                                             required
                                             className="h-11 focus-visible:ring-primary"
@@ -153,6 +156,7 @@ export default function LoginPage() {
                                             id="a-password"
                                             name="password"
                                             type="password"
+                                            autoComplete="current-password"
                                             required
                                             className="h-11 focus-visible:ring-primary"
                                         />
