@@ -94,6 +94,6 @@ model Fee {
 model Setting {
   id        Int      @id @default(autoincrement())
   key       String   @unique
-  value     String   // AES-256-CBC encrypted
+  value     String // AES-256-CBC encrypted
   updatedAt DateTime @updatedAt
 }
