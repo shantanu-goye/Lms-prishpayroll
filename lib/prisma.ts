@@ -1,14 +1,25 @@
 import { PrismaClient } from '@prisma/client'
-import { PrismaLibSQLAdapter } from '@prisma/adapter-libsql'
+import { PrismaLibSQL } from '@prisma/adapter-libsql'
 import { createClient } from '@libsql/client'
 
 const prismaClientSingleton = () => {
-  const libsql = createClient({
-    url: process.env.DATABASE_URL!,
-  })
+  const url = process.env.TURSO_DATABASE_URL ?? process.env.DATABASE_URL
+  if (!url) {
+    throw new Error('Missing Turso database URL. Set TURSO_DATABASE_URL or DATABASE_URL.')
+  }
 
-  const adapter = new PrismaLibSQLAdapter(libsql)
-  return new PrismaClient({ adapter })
+  const clientConfig: { url: string; authToken?: string } = {
+    url,
+  }
+
+  if (process.env.TURSO_AUTH_TOKEN) {
+    clientConfig.authToken = process.env.TURSO_AUTH_TOKEN
+  }
+
+  const libsql = createClient(clientConfig)
+  const adapter = new PrismaLibSQL(libsql)
+  const clientOptions = { adapter } satisfies ConstructorParameters<typeof PrismaClient>[0]
+  return new PrismaClient(clientOptions)
 }
 
 declare global {
