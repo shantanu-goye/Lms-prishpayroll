@@ -10,6 +10,7 @@ export default function StudentLayout({
     const navItems = [
         { label: 'My Courses', href: '/dashboard/student', iconName: 'BookOpen' },
         { label: 'Assignments', href: '/dashboard/student/assignments', iconName: 'FileText' },
+        { label: 'Fees', href: '/dashboard/student/fees', iconName: 'CreditCard' },
     ]
 
     const handleLogout = async () => {
