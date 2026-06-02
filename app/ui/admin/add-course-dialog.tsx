@@ -73,6 +73,17 @@ export default function AddCourseDialog() {
                         />
                     </div>
 
+                    <div className="space-y-[8px]">
+                        <Label htmlFor="materialPdf" className="text-[#0B2E3F] font-medium text-[14px]">Course Material (PDF)</Label>
+                        <Input
+                            id="materialPdf"
+                            name="materialPdf"
+                            type="file"
+                            accept=".pdf"
+                            className="border-[#E5E7EB] focus-visible:ring-[#015A86] rounded-[6px] h-[40px] pt-[8px]"
+                        />
+                    </div>
+
                     {(state?.error || state?.success) && (
                         <div className={`p-[12px] rounded-[8px] text-[14px] font-medium ${state?.error ? 'bg-red-50 text-red-600 border border-red-200' : 'bg-[#F5F8FA] text-[#015A86] border border-[#015A86]'}`}>
                             {state?.error || state?.success}

@@ -24,6 +24,7 @@ type Course = {
     title: string
     description: string | null
     price: number
+    materialPdfUrl: string | null
 }
 
 const initialState = {
@@ -78,6 +79,22 @@ export default function EditCourseDialog({ course }: { course: any }) {
                             defaultValue={course.price}
                             className="border-[#E5E7EB] focus-visible:ring-[#015A86] rounded-[6px] h-[40px]"
                         />
+                    </div>
+
+                    <div className="space-y-[8px]">
+                        <Label htmlFor="materialPdf" className="text-[#0B2E3F] font-medium text-[14px]">Update Course Material (PDF)</Label>
+                        <Input
+                            id="materialPdf"
+                            name="materialPdf"
+                            type="file"
+                            accept=".pdf"
+                            className="border-[#E5E7EB] focus-visible:ring-[#015A86] rounded-[6px] h-[40px] pt-[8px]"
+                        />
+                        {course.materialPdfUrl && (
+                            <p className="text-[12px] text-[#015A86]">
+                                Current: <a href={course.materialPdfUrl} target="_blank" className="underline">View PDF</a>
+                            </p>
+                        )}
                     </div>
 
                     {(state?.error || state?.success) && (

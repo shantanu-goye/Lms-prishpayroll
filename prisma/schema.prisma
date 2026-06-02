@@ -27,15 +27,16 @@ model User {
 }
 
 model Course {
-  id           Int          @id @default(autoincrement())
-  title        String
-  description  String?
-  price        Float        @default(0)
-  instructorId Int
-  instructor   User         @relation(fields: [instructorId], references: [id])
-  enrollments  Enrollment[]
-  fees         Fee[]
-  modules      Module[]
+  id             Int          @id @default(autoincrement())
+  title          String
+  description    String?
+  price          Float        @default(0)
+  materialPdfUrl String?
+  instructorId   Int
+  instructor     User         @relation(fields: [instructorId], references: [id])
+  enrollments    Enrollment[]
+  fees           Fee[]
+  modules        Module[]
 }
 
 model Enrollment {
@@ -53,6 +54,8 @@ model Enrollment {
 model Module {
   id          Int          @id @default(autoincrement())
   title       String
+  description String?
+  fileUrl     String?
   order       Int          @default(0)
   courseId    Int
   assignments Assignment[]

@@ -46,6 +46,8 @@ const migrations = [
   `CREATE TABLE IF NOT EXISTS "Module" (
     "id" INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT,
     "title" TEXT NOT NULL,
+    "description" TEXT,
+    "fileUrl" TEXT,
     "order" INTEGER NOT NULL DEFAULT 0,
     "courseId" INTEGER NOT NULL,
     CONSTRAINT "Module_courseId_fkey" FOREIGN KEY ("courseId") REFERENCES "Course" ("id") ON DELETE CASCADE ON UPDATE CASCADE
@@ -57,6 +59,7 @@ const migrations = [
     "description" TEXT,
     "dueDate" DATETIME,
     "moduleId" INTEGER NOT NULL,
+    "fileUrl" TEXT,
     CONSTRAINT "Assignment_moduleId_fkey" FOREIGN KEY ("moduleId") REFERENCES "Module" ("id") ON DELETE CASCADE ON UPDATE CASCADE
   )`,
 
@@ -67,6 +70,7 @@ const migrations = [
     "filePath" TEXT NOT NULL,
     "status" TEXT NOT NULL DEFAULT 'PENDING',
     "submittedAt" DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    "feedback" TEXT,
     CONSTRAINT "Submission_studentId_fkey" FOREIGN KEY ("studentId") REFERENCES "User" ("id") ON DELETE RESTRICT ON UPDATE CASCADE,
     CONSTRAINT "Submission_assignmentId_fkey" FOREIGN KEY ("assignmentId") REFERENCES "Assignment" ("id") ON DELETE CASCADE ON UPDATE CASCADE
   )`,
@@ -81,6 +85,14 @@ const migrations = [
     CONSTRAINT "Fee_courseId_fkey" FOREIGN KEY ("courseId") REFERENCES "Course" ("id") ON DELETE SET NULL ON UPDATE CASCADE,
     CONSTRAINT "Fee_studentId_fkey" FOREIGN KEY ("studentId") REFERENCES "User" ("id") ON DELETE RESTRICT ON UPDATE CASCADE
   )`,
+
+  `CREATE TABLE IF NOT EXISTS "Setting" (
+    "id" INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT,
+    "key" TEXT NOT NULL,
+    "value" TEXT NOT NULL,
+    "updatedAt" DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP
+  )`,
+  `CREATE UNIQUE INDEX IF NOT EXISTS "Setting_key_key" ON "Setting"("key")`,
 ]
 
 async function main() {
