@@ -54,7 +54,11 @@ export default function SubmissionRow({ submission }: { submission: any }) {
           <VerifySubmissionButton
             submissionId={id}
             currentStatus={status}
+            currentFeedback={feedback}
             courseId={course.id}
+            fileUrl={filePath}
+            studentName={student.name}
+            assignmentTitle={assignment.title}
           />
           <Button
             variant="ghost"

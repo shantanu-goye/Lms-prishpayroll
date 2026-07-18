@@ -3,30 +3,36 @@
 import { useState } from 'react'
 import { updateSubmissionFeedback } from '@/app/actions/submissions'
 import { Button } from '@/components/ui/button'
-import { 
-    Dialog, 
-    DialogContent, 
-    DialogHeader, 
-    DialogTitle, 
+import {
+    Dialog,
+    DialogContent,
+    DialogHeader,
+    DialogTitle,
     DialogTrigger,
     DialogFooter,
     DialogDescription
 } from '@/components/ui/dialog'
 import { Textarea } from '@/components/ui/textarea'
 import { Label } from '@/components/ui/label'
-import { CheckCircle2, XCircle, MessageSquare, ExternalLink, Loader2 } from 'lucide-react'
+import { CheckCircle2, XCircle, MessageSquare, Loader2 } from 'lucide-react'
 import { useTransition } from 'react'
 
-export default function VerifySubmissionButton({ 
-    submissionId, 
-    courseId, 
+export default function VerifySubmissionButton({
+    submissionId,
+    courseId,
     currentStatus,
-    currentFeedback
-}: { 
-    submissionId: number; 
-    courseId: number; 
+    currentFeedback,
+    fileUrl,
+    studentName,
+    assignmentTitle,
+}: {
+    submissionId: number;
+    courseId: number;
     currentStatus: string;
     currentFeedback?: string | null;
+    fileUrl?: string;
+    studentName?: string;
+    assignmentTitle?: string;
 }) {
     const [isPending, startTransition] = useTransition()
     const [open, setOpen] = useState(false)
@@ -66,20 +72,22 @@ export default function VerifySubmissionButton({
     return (
         <Dialog open={open} onOpenChange={setOpen}>
             <DialogTrigger asChild>
-                <Button 
-                    variant="ghost" 
-                    size="sm" 
+                <Button
+                    variant="ghost"
+                    size="sm"
                     className="h-[32px] px-[12px] text-[12px] font-medium text-[#015A86] hover:bg-[#F5F8FA] rounded-[6px] border-0"
                 >
                     <MessageSquare className="mr-[6px] h-[14px] w-[14px] stroke-2" />
                     Review
                 </Button>
             </DialogTrigger>
-            <DialogContent className="sm:max-w-[500px] bg-white rounded-[12px] p-[32px] border border-[#E5E7EB]">
-                <DialogHeader className="mb-[24px]">
+            <DialogContent className="sm:max-w-[600px] bg-white rounded-[12px] p-[32px] border border-[#E5E7EB]">
+                <DialogHeader className="mb-[20px]">
                     <DialogTitle className="text-[24px] font-semibold text-[#015A86]">Review Submission</DialogTitle>
                     <DialogDescription className="text-[#0B2E3F] text-[14px]">
-                        Leave feedback and update the submission status.
+                        {studentName && assignmentTitle
+                            ? `${studentName}'s submission for ${assignmentTitle}`
+                            : 'Leave feedback and update the submission status.'}
                     </DialogDescription>
                 </DialogHeader>
 
@@ -88,6 +96,39 @@ export default function VerifySubmissionButton({
                         <span className="text-[14px] font-medium text-[#0B2E3F]">Current Status:</span>
                         {getStatusBadge()}
                     </div>
+
+                    {fileUrl && (
+                        <div className="space-y-[8px]">
+                            <Label className="text-[#0B2E3F] font-medium text-[14px]">Submitted File</Label>
+                            <div className="border border-[#E5E7EB] rounded-[8px] overflow-hidden bg-[#FAFAFA] h-[400px] flex items-center justify-center">
+                                {fileUrl.match(/\.pdf$/i) ? (
+                                    <iframe
+                                        src={`${fileUrl}#view=FitH`}
+                                        className="w-full h-full"
+                                        title="Student Submission"
+                                    />
+                                ) : fileUrl.match(/\.(jpg|jpeg|png|gif|webp)$/i) ? (
+                                    <img
+                                        src={fileUrl}
+                                        alt="Student Submission"
+                                        className="max-w-full max-h-full object-contain p-[16px]"
+                                    />
+                                ) : (
+                                    <div className="text-center p-[24px]">
+                                        <p className="text-[14px] text-[#0B2E3F] mb-[12px]">Preview not available for this file type.</p>
+                                        <a
+                                            href={fileUrl}
+                                            target="_blank"
+                                            rel="noopener noreferrer"
+                                            className="inline-flex items-center gap-[8px] px-[16px] py-[8px] bg-[#015A86] text-white rounded-[6px] text-[13px] font-medium hover:bg-[#014a6e] transition-colors"
+                                        >
+                                            Download File
+                                        </a>
+                                    </div>
+                                )}
+                            </div>
+                        </div>
+                    )}
 
                     <div className="space-y-[8px]">
                         <Label htmlFor="feedback" className="text-[#0B2E3F] font-medium text-[14px]">Admin Feedback</Label>

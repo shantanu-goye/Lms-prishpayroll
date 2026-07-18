@@ -199,6 +199,9 @@ export default async function CourseDetailsPage({ params }: { params: { id: stri
                                                                         courseId={courseId}
                                                                         currentStatus={sub.status}
                                                                         currentFeedback={sub.feedback}
+                                                                        fileUrl={sub.filePath}
+                                                                        studentName={sub.student.name}
+                                                                        assignmentTitle={assignment.title}
                                                                     />
                                                                 </div>
                                                             </div>
