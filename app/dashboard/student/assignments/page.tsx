@@ -2,7 +2,7 @@ import prisma from '@/lib/prisma'
 import { verifySession } from '@/lib/auth'
 import { Card, CardHeader, CardTitle, CardContent } from '@/components/ui/card'
 import { Badge } from '@/components/ui/badge'
-import { FileText, Clock, CheckCircle2, AlertCircle, ExternalLink } from 'lucide-react'
+import { FileText, Clock, CheckCircle2, AlertCircle } from 'lucide-react'
 import SubmissionForm from '@/app/ui/student/submission-form'
 import FileViewer from '@/components/FileViewer'
 
@@ -103,14 +103,12 @@ export default async function StudentAssignmentsPage() {
                                             </span>
                                         </div>
                                         {assignment.fileUrl && (
-                                            <a 
-                                                href={assignment.fileUrl} 
-                                                target="_blank" 
-                                                className="inline-flex items-center justify-center gap-2 px-4 py-2 rounded-lg bg-[#015A86] text-white text-[14px] font-medium hover:bg-[#014a6e] transition-colors w-fit"
+                                            <FileViewer
+                                                fileUrl={assignment.fileUrl}
+                                                className="inline-flex items-center justify-center gap-2 px-4 py-2 rounded-lg bg-[#015A86] text-white text-[14px] font-medium hover:bg-[#014a6e] transition-colors w-fit border-0 h-auto"
                                             >
-                                                <ExternalLink className="h-4 w-4" />
                                                 Download Materials
-                                            </a>
+                                            </FileViewer>
                                         )}
                                     </div>
                                 </div>
@@ -134,6 +132,13 @@ export default async function StudentAssignmentsPage() {
                                                     <p className="text-[13px] text-[#0B2E3F] italic leading-relaxed">
                                                         "{assignment.submission.feedback}"
                                                     </p>
+                                                </div>
+                                            )}
+
+                                            {assignment.submission.status === 'REJECTED' && (
+                                                <div className="mt-[16px] pt-[16px] border-t border-dashed border-red-200">
+                                                    <p className="text-[12px] font-bold text-red-600 mb-[8px]">Resubmit Assignment</p>
+                                                    <SubmissionForm assignmentId={assignment.id} />
                                                 </div>
                                             )}
                                         </div>

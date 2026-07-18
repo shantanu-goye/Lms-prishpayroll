@@ -9,9 +9,10 @@ import { unenrollStudent } from '@/app/actions/enrollments'
 import { deleteAssignment } from '@/app/actions/assignments'
 import { deleteModule } from '@/app/actions/modules'
 import EditAssignmentDialog from '@/app/ui/admin/edit-assignment-dialog'
+import FileViewer from '@/components/FileViewer'
 import { Card, CardHeader, CardTitle, CardContent, CardDescription } from '@/components/ui/card'
 import { Button } from '@/components/ui/button'
-import { ChevronLeft, Users, Trash2, BookOpen, FileText, Layers, ExternalLink } from 'lucide-react'
+import { ChevronLeft, Users, Trash2, BookOpen, FileText, Layers } from 'lucide-react'
 
 export default async function CourseDetailsPage({ params }: { params: { id: string } }) {
     const { id } = await params
@@ -182,9 +183,7 @@ export default async function CourseDetailsPage({ params }: { params: { id: stri
                                                                     </div>
                                                                 </div>
                                                                 <div className="flex items-center gap-[8px]">
-                                                                    <a href={sub.filePath} target="_blank" className="text-[#015A86] hover:text-[#FD8B0A] transition-colors">
-                                                                        <ExternalLink className="h-[14px] w-[14px]" />
-                                                                    </a>
+                                                                    <FileViewer fileUrl={sub.filePath} className="text-[#015A86] hover:text-[#FD8B0A] transition-colors h-[28px] w-[28px] rounded-[6px] inline-flex items-center justify-center border-0" />
                                                                     <VerifySubmissionButton
                                                                         submissionId={sub.id}
                                                                         courseId={courseId}

@@ -5,7 +5,7 @@ import Link from 'next/link'
 import { notFound } from 'next/navigation'
 import { Card, CardHeader, CardTitle, CardContent, CardDescription } from '@/components/ui/card'
 import { Button } from '@/components/ui/button'
-import { ChevronLeft, GraduationCap, CheckCircle2, Clock, FileText, ExternalLink, XCircle, Layers } from 'lucide-react'
+import { ChevronLeft, GraduationCap, CheckCircle2, Clock, FileText, XCircle, Layers } from 'lucide-react'
 import FileViewer from '@/components/FileViewer'
 
 export default async function StudentCoursePage({ params }: { params: { id: string } }) {
@@ -129,14 +129,12 @@ export default async function StudentCoursePage({ params }: { params: { id: stri
                                                         Due: {new Date(assignment.dueDate).toLocaleDateString()}
                                                     </div>
                                                     {assignment.fileUrl && (
-                                                        <a 
-                                                            href={assignment.fileUrl} 
-                                                            target="_blank" 
-                                                            className="flex items-center gap-[6px] text-[13px] font-bold text-[#FD8B0A] hover:underline transition-all"
+                                                        <FileViewer
+                                                            fileUrl={assignment.fileUrl}
+                                                            className="flex items-center gap-[6px] text-[13px] font-bold text-[#FD8B0A] hover:underline transition-all border-0 bg-transparent p-0 h-auto"
                                                         >
-                                                            <ExternalLink className="h-[14px] w-[14px]" />
                                                             Materials
-                                                        </a>
+                                                        </FileViewer>
                                                     )}
                                                 </div>
                                             )}
@@ -144,6 +142,7 @@ export default async function StudentCoursePage({ params }: { params: { id: stri
 
                                         <div className="mt-[12px] ml-[24px]">
                                             {submission ? (
+                                                <>
                                                 <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-[12px] bg-white rounded-[8px] p-[12px] border border-[#E5E7EB]">
                                                     <div className="flex items-center gap-[12px]">
                                                         {submission.status === 'VERIFIED' ? (
@@ -178,6 +177,13 @@ export default async function StudentCoursePage({ params }: { params: { id: stri
                                                         className="font-medium border-[#015A86] text-[#015A86] hover:bg-[#F5F8FA] h-[36px] px-[16px] rounded-[6px] transition-colors inline-flex items-center gap-[6px] border"
                                                     />
                                                 </div>
+                                                {submission.status === 'REJECTED' && (
+                                                    <div className="mt-[12px] pt-[12px] border-t border-dashed border-red-200">
+                                                        <p className="text-[12px] font-bold text-red-600 mb-[8px]">Resubmit Assignment</p>
+                                                        <SubmissionForm assignmentId={assignment.id} />
+                                                    </div>
+                                                )}
+                                                </>
                                             ) : (
                                                 <div className="space-y-[12px]">
                                                     <div className="flex items-center gap-[8px]">

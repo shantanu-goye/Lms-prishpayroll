@@ -44,7 +44,7 @@ model Enrollment {
   courseId    Int
   agreedPrice Float?
   enrolledAt  DateTime @default(now())
-  user        User     @relation(fields: [userId], references: [id])
+  user        User     @relation(fields: [userId], references: [id], onDelete: Cascade)
   course      Course   @relation(fields: [courseId], references: [id], onDelete: Cascade)
 
   @@unique([userId, courseId])
@@ -79,7 +79,7 @@ model Submission {
   submittedAt  DateTime   @default(now())
   feedback     String?
   assignment   Assignment @relation(fields: [assignmentId], references: [id], onDelete: Cascade)
-  student      User       @relation(fields: [studentId], references: [id])
+  student      User       @relation(fields: [studentId], references: [id], onDelete: Cascade)
 }
 
 model Fee {
@@ -89,8 +89,8 @@ model Fee {
   amount    Float
   status    String    @default("PENDING")
   dueDate   DateTime?
-  course    Course?   @relation(fields: [courseId], references: [id])
-  student   User      @relation(fields: [studentId], references: [id])
+  course    Course?   @relation(fields: [courseId], references: [id], onDelete: SetNull)
+  student   User      @relation(fields: [studentId], references: [id], onDelete: Cascade)
 }
 
 model Setting {

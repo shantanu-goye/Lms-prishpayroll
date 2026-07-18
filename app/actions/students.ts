@@ -139,7 +139,7 @@ export async function updateStudent(id: number, prevState: any, formData: FormDa
 
 export async function deleteStudent(id: number) {
   try {
-    await prisma.user.deleteMany({
+    await prisma.user.delete({
       where: { id },
     })
     revalidatePath('/dashboard/admin/students')

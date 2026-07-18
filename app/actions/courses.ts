@@ -63,7 +63,7 @@ export async function updateCourse(id: number, prevState: any, formData: FormDat
 
 export async function deleteCourse(id: number) {
   try {
-    await prisma.course.deleteMany({
+    await prisma.course.delete({
       where: { id },
     })
     revalidatePath('/dashboard/admin/courses')

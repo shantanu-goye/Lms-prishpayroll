@@ -13,7 +13,13 @@ const s3Client = new S3Client({
   },
 });
 
+const MAX_FILE_SIZE = 50 * 1024 * 1024 // 50MB
+
 export async function uploadToS3(file: File, pathPrefix: string = "submissions") {
+  if (file.size > MAX_FILE_SIZE) {
+    throw new Error(`File size exceeds 50MB limit`)
+  }
+
   const buffer = Buffer.from(await file.arrayBuffer());
   const filename = `${Date.now()}_${file.name.replace(/\s+/g, "_")}`;
   const key = `${pathPrefix}/${filename}`;
@@ -30,8 +36,7 @@ export async function uploadToS3(file: File, pathPrefix: string = "submissions")
 
   await upload.done();
 
-  // Use CDN URL
-  const url = `http://media.pixelperfects.in/${key}`;
+  const url = `https://media.pixelperfects.in/${key}`;
 
   return { url, key };
 }

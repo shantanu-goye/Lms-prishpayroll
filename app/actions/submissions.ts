@@ -22,7 +22,6 @@ export async function submitAssignment(prevState: any, formData: FormData) {
   }
 
   try {
-    // 1. Validate File type
     const allowedTypes = [
       'application/pdf',
       'application/msword',
@@ -37,29 +36,43 @@ export async function submitAssignment(prevState: any, formData: FormData) {
       return { error: 'Invalid file type. Allowed: PDF, DOC, DOCX, JPG, PNG', success: '' }
     }
 
-    // 2. Upload to S3
+    const existingSubmission = await prisma.submission.findFirst({
+      where: { assignmentId, studentId: session.userId },
+    })
+
+    if (existingSubmission && existingSubmission.status === 'VERIFIED') {
+      return { error: 'This assignment has already been verified and cannot be resubmitted', success: '' }
+    }
+
     const { url } = await uploadToS3(file, 'submissions')
     const filePath = url
 
-    await prisma.submission.create({
-      data: {
-        assignmentId,
-        studentId: session.userId,
-        filePath,
-        status: 'PENDING',
-      },
-    })
-    
+    if (existingSubmission) {
+      await prisma.submission.update({
+        where: { id: existingSubmission.id },
+        data: { filePath, status: 'PENDING', feedback: null, submittedAt: new Date() },
+      })
+    } else {
+      await prisma.submission.create({
+        data: {
+          assignmentId,
+          studentId: session.userId,
+          filePath,
+          status: 'PENDING',
+        },
+      })
+    }
+
     const assignment = await prisma.assignment.findUnique({
       where: { id: assignmentId },
       include: { module: true },
     })
-    
+
     if (assignment) {
       revalidatePath(`/dashboard/student/course/${assignment.module.courseId}`)
       revalidatePath('/dashboard/student/assignments')
     }
-    
+
     return { success: 'Assignment submitted successfully', error: '' }
   } catch (error) {
     console.error('Failed to submit assignment:', error)
@@ -102,7 +115,6 @@ export async function updateSubmissionFeedback(submissionId: number, feedback: s
       },
     })
 
-    // Send feedback email to student
     await sendMail({
       to: updatedSubmission.student.email,
       subject: `Assignment Feedback: ${updatedSubmission.assignment.title}`,
@@ -121,5 +133,24 @@ export async function updateSubmissionFeedback(submissionId: number, feedback: s
   } catch (error) {
     console.error('Failed to update submission feedback:', error)
     return { error: 'Failed to update submission feedback' }
+  }
+}
+
+export async function deleteSubmission(submissionId: number, courseId: number) {
+  const session = await verifySession()
+  if (!session || session.role !== 'ADMIN') {
+    return { error: 'Unauthorized' }
+  }
+
+  try {
+    await prisma.submission.delete({
+      where: { id: submissionId },
+    })
+    revalidatePath(`/dashboard/admin/courses/${courseId}`)
+    revalidatePath('/dashboard/admin/submissions')
+    return { success: 'Submission deleted successfully' }
+  } catch (error) {
+    console.error('Failed to delete submission:', error)
+    return { error: 'Failed to delete submission' }
   }
 }
