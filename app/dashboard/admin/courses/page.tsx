@@ -1,10 +1,11 @@
 import prisma from '@/lib/prisma'
 import AddCourseDialog from '@/app/ui/admin/add-course-dialog'
 import EditCourseDialog from '@/app/ui/admin/edit-course-dialog'
+import DeleteConfirmDialog from '@/components/DeleteConfirmDialog'
 import { deleteCourse } from '@/app/actions/courses'
 import { Card, CardHeader, CardTitle, CardContent, CardFooter } from '@/components/ui/card'
 import { Button } from '@/components/ui/button'
-import { Users, Info, Trash2, BookOpen } from 'lucide-react'
+import { Users, Info, BookOpen } from 'lucide-react'
 import Link from 'next/link'
 
 export default async function CoursesPage() {
@@ -61,20 +62,12 @@ export default async function CoursesPage() {
 
                             <EditCourseDialog course={course} />
 
-                            <form action={async () => {
-                                'use server'
-                                await deleteCourse(course.id)
-                            }}>
-                                <Button
-                                    variant="ghost"
-                                    size="icon"
-                                    className="text-red-500 hover:bg-red-50 hover:text-red-600 h-[40px] w-[40px] rounded-[6px] transition-colors border-0"
-                                    type="submit"
-                                    title="Delete Course"
-                                >
-                                    <Trash2 className="h-[18px] w-[18px] stroke-2" />
-                                </Button>
-                            </form>
+                            <DeleteConfirmDialog
+                                onConfirm={async () => { 'use server'; await deleteCourse(course.id) }}
+                                title="Delete Course"
+                                description={`Are you sure you want to delete ${course.title}? All enrollments, modules, assignments, and submissions will also be removed.`}
+                                entityName="Course"
+                            />
                         </CardFooter>
                     </Card>
                 ))}

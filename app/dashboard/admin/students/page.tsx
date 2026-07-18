@@ -1,6 +1,7 @@
 import prisma from '@/lib/prisma'
 import AddStudentDialog from '@/app/ui/admin/add-student-dialog'
 import EditStudentDialog from '@/app/ui/admin/edit-student-dialog'
+import DeleteConfirmDialog from '@/components/DeleteConfirmDialog'
 import { deleteStudent } from '@/app/actions/students'
 import {
     Table,
@@ -11,8 +12,6 @@ import {
     TableHeader,
     TableRow
 } from '@/components/ui/table'
-import { Button } from '@/components/ui/button'
-import { Trash2 } from 'lucide-react'
 
 export default async function StudentsPage() {
     const students = await prisma.user.findMany({
@@ -56,20 +55,12 @@ export default async function StudentsPage() {
                                 <TableCell className="text-right px-[24px] py-[16px]">
                                     <div className="flex items-center justify-end gap-[8px]">
                                         <EditStudentDialog student={student} />
-                                        <form action={async () => {
-                                            'use server'
-                                            await deleteStudent(student.id)
-                                        }}>
-                                            <Button
-                                                variant="ghost"
-                                                size="icon"
-                                                className="text-red-500 hover:bg-red-50 hover:text-red-600 h-[36px] w-[36px] rounded-[6px] transition-colors border-0"
-                                                type="submit"
-                                                title="Delete Student"
-                                            >
-                                                <Trash2 className="h-[18px] w-[18px] stroke-2" />
-                                            </Button>
-                                        </form>
+                                        <DeleteConfirmDialog
+                                            onConfirm={async () => { 'use server'; await deleteStudent(student.id) }}
+                                            title="Delete Student"
+                                            description={`Are you sure you want to delete ${student.name}? All enrollments, submissions, and fee records will also be removed.`}
+                                            entityName="Student"
+                                        />
                                     </div>
                                 </TableCell>
                             </TableRow>
