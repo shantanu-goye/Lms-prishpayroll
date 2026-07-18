@@ -63,8 +63,21 @@ export async function updateCourse(id: number, prevState: any, formData: FormDat
 
 export async function deleteCourse(id: number) {
   try {
-    await prisma.course.delete({
-      where: { id },
+    await prisma.$transaction(async (tx) => {
+      const modules = await tx.module.findMany({
+        where: { courseId: id },
+        select: { id: true },
+      })
+      const moduleIds = modules.map(m => m.id)
+
+      await tx.submission.deleteMany({
+        where: { assignment: { moduleId: { in: moduleIds } } },
+      })
+      await tx.assignment.deleteMany({ where: { moduleId: { in: moduleIds } } })
+      await tx.module.deleteMany({ where: { courseId: id } })
+      await tx.enrollment.deleteMany({ where: { courseId: id } })
+      await tx.fee.updateMany({ where: { courseId: id }, data: { courseId: null } })
+      await tx.course.delete({ where: { id } })
     })
     revalidatePath('/dashboard/admin/courses')
   } catch (error) {

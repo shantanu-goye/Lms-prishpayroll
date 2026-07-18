@@ -139,8 +139,11 @@ export async function updateStudent(id: number, prevState: any, formData: FormDa
 
 export async function deleteStudent(id: number) {
   try {
-    await prisma.user.delete({
-      where: { id },
+    await prisma.$transaction(async (tx) => {
+      await tx.enrollment.deleteMany({ where: { userId: id } })
+      await tx.fee.deleteMany({ where: { studentId: id } })
+      await tx.submission.deleteMany({ where: { studentId: id } })
+      await tx.user.delete({ where: { id } })
     })
     revalidatePath('/dashboard/admin/students')
   } catch (error) {

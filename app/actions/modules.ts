@@ -35,8 +35,12 @@ export async function createModule(prevState: any, formData: FormData) {
 
 export async function deleteModule(moduleId: number, courseId: number) {
   try {
-    await prisma.module.delete({
-      where: { id: moduleId },
+    await prisma.$transaction(async (tx) => {
+      await tx.submission.deleteMany({
+        where: { assignment: { moduleId } },
+      })
+      await tx.assignment.deleteMany({ where: { moduleId } })
+      await tx.module.delete({ where: { id: moduleId } })
     })
     revalidatePath(`/dashboard/admin/courses/${courseId}`)
   } catch (error) {
