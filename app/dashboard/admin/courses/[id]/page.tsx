@@ -146,6 +146,16 @@ export default async function CourseDetailsPage({ params }: { params: { id: stri
                                                                 Due: {new Date(assignment.dueDate).toLocaleDateString()}
                                                             </p>
                                                         )}
+                                                        {assignment.fileUrl && (
+                                                            <div className="mt-[8px] ml-[24px]">
+                                                                <FileViewer
+                                                                    fileUrl={assignment.fileUrl}
+                                                                    className="inline-flex items-center gap-[6px] text-[12px] font-bold text-[#FD8B0A] hover:text-[#e57a00] transition-colors bg-transparent border-0 p-0 h-auto"
+                                                                >
+                                                                    View Materials
+                                                                </FileViewer>
+                                                            </div>
+                                                        )}
                                                     </div>
                                                     <div className="flex items-center gap-[4px]">
                                                         <EditAssignmentDialog assignment={assignment} />

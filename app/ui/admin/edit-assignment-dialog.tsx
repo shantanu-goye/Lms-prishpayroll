@@ -16,7 +16,8 @@ import {
     DialogTitle,
     DialogTrigger,
 } from '@/components/ui/dialog'
-import { Loader2, Pencil } from 'lucide-react'
+import { Loader2, Pencil, Eye } from 'lucide-react'
+import FileViewer from '@/components/FileViewer'
 
 const initialState = {
     error: '',
@@ -72,9 +73,22 @@ export default function EditAssignmentDialog({ assignment }: { assignment: any }
                         />
                     </div>
 
+                    {assignment.fileUrl && (
+                        <div className="space-y-[8px]">
+                            <Label className="text-[#0B2E3F] font-medium text-[14px]">Current Materials</Label>
+                            <FileViewer
+                                fileUrl={assignment.fileUrl}
+                                className="inline-flex items-center gap-[8px] px-[14px] py-[8px] border border-[#015A86] text-[#015A86] rounded-[6px] hover:bg-[#F5F8FA] transition-colors text-[13px] font-medium"
+                            >
+                                <Eye className="h-[16px] w-[16px]" />
+                                Preview Current File
+                            </FileViewer>
+                        </div>
+                    )}
+
                     <div className="space-y-[8px]">
                         <Label htmlFor="file" className="text-[#0B2E3F] font-medium text-[14px]">
-                            Update Materials {assignment.fileUrl && <span className="text-[12px] text-[#015A86] font-normal ml-2">(Current file exists)</span>}
+                            Replace Materials
                         </Label>
                         <Input
                             id="file"
